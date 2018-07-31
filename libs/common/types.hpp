@@ -166,11 +166,11 @@ namespace iroha {
    * @return monadic value, which can be of another type
    */
   template <typename T, typename Transform>
-  auto operator|(T t, Transform f) ->
-      typename std::enable_if<not std::is_same<decltype(f(*t)), void>::value,
-                              decltype(f(*t))>::type {
+  decltype(auto) operator|(T &&t, Transform f) -> typename std::enable_if<
+      not std::is_same<decltype(f(*std::forward<T>(t))), void>::value,
+      decltype(f(*t))>::type {
     if (t) {
-      return f(*t);
+      return f(*std::forward<T>(t));
     }
     return {};
   }
@@ -191,13 +191,12 @@ namespace iroha {
    * @param t - monadic value
    * @param f - function, which takes dereferenced value, and returns
    * wrapped value
-   * @return monadic value, which can be of another type
    */
   template <typename T, typename Transform>
-  auto operator|(T t, Transform f) -> typename std::enable_if<
-      std::is_same<decltype(f(*t)), void>::value>::type {
+  auto operator|(T &&t, Transform f) -> typename std::enable_if<
+      std::is_same<decltype(f(*std::forward<T>(t))), void>::value>::type {
     if (t) {
-      f(*t);
+      f(*std::forward<T>(t));
     }
   }
 

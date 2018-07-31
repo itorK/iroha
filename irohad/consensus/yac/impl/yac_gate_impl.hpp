@@ -18,10 +18,11 @@
 #ifndef IROHA_YAC_GATE_IMPL_HPP
 #define IROHA_YAC_GATE_IMPL_HPP
 
-#include <memory>
-#include <rxcpp/rx-observable.hpp>
-
 #include "consensus/yac/yac_gate.hpp"
+
+#include <memory>
+
+#include <rxcpp/rx-observable.hpp>
 #include "consensus/yac/yac_hash_provider.hpp"
 #include "logger/logger.hpp"
 
