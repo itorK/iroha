@@ -20,12 +20,13 @@ YacProposalGateImpl::YacProposalGateImpl(
     std::shared_ptr<YacProposalHashProvider> hash_provider)
     : hash_gate_(std::move(hash_gate)),
       orderer_(std::move(orderer)),
-      hash_provider_(std::move(hash_provider)) {}
+      hash_provider_(std::move(hash_provider)),
+      log_(logger::log("YacProposalGateImpl")) {}
 
 void YacProposalGateImpl::vote(ProposalVote vote) {
   auto hash = hash_provider_->makeHash(vote);
   log_->info("vote for proposal ({}, {}, {})",
-             vote.proposal ? vote.proposal.value()->toString() : "''",
+             vote.proposal ? vote.proposal.value()->hash().toString() : "''",
              vote.round.first,
              vote.round.second);
   auto order = orderer_->getOrdering(hash);
