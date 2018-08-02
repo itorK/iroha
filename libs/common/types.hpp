@@ -166,11 +166,13 @@ namespace iroha {
    * @return monadic value, which can be of another type
    */
   template <typename T, typename Transform>
-  decltype(auto) operator|(T &&t, Transform f) -> typename std::enable_if<
-      not std::is_same<decltype(f(*std::forward<T>(t))), void>::value,
-      decltype(f(*t))>::type {
-    if (t) {
-      return f(*std::forward<T>(t));
+  auto operator|(T &&t, Transform &&f) -> std::enable_if_t<
+      not std::is_same<
+          decltype(std::forward<Transform>(f)(*std::forward<T>(t))),
+          void>::value,
+      decltype(std::forward<Transform>(f)(*std::forward<T>(t)))> {
+    if (std::forward<T>(t)) {
+      return std::forward<Transform>(f)(*std::forward<T>(t));
     }
     return {};
   }
@@ -193,10 +195,11 @@ namespace iroha {
    * wrapped value
    */
   template <typename T, typename Transform>
-  auto operator|(T &&t, Transform f) -> typename std::enable_if<
-      std::is_same<decltype(f(*std::forward<T>(t))), void>::value>::type {
-    if (t) {
-      f(*std::forward<T>(t));
+  auto operator|(T &&t, Transform &&f) -> std::enable_if_t<
+      std::is_same<decltype(std::forward<Transform>(f)(*std::forward<T>(t))),
+                   void>::value> {
+    if (std::forward<T>(t)) {
+      std::forward<Transform>(f)(*std::forward<T>(t));
     }
   }
 
